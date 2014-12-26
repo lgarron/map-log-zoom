@@ -88,7 +88,7 @@ function draw(images) {
 
 }
 
-function loadImages() {
+function loadImages(location) {
   console.log("Loading images.");
 
   var images = {};
@@ -106,7 +106,11 @@ function loadImages() {
   function loadImage(zoom) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = "blob";
-    xhr.open("GET", "https://maps.googleapis.com/maps/api/staticmap?center=48.85837,2.294481&zoom=" + zoom + "&size=640x640&maptype=satellite&format=jpg", true);
+    xhr.open("GET", "https://maps.googleapis.com/maps/api/staticmap" +
+      "?center=" +
+      location.latitude + "," +
+      location.longitude +
+      "&zoom=" + zoom + "&size=640x640&maptype=satellite&format=jpg", true);
 
     var img = document.createElement("img");
     img.alt = "Image #" + zoom;
@@ -128,5 +132,23 @@ function loadImages() {
 }
 
 window.addEventListener("load", function() {
-  loadImages();
+  loadImages({latitude: 48.85837, longitude: 2.294481});
+});
+
+// Location Picker
+
+
+$('#us2').locationpicker({
+  location: {latitude: 48.85837, longitude: 2.294481},
+  radius: 0,
+  inputBinding: {
+    latitudeInput: $('#us2-lat'),
+    longitudeInput: $('#us2-lon'),
+    radiusInput: $('#us2-radius'),
+    locationNameInput: $('#us2-address')
+  },
+  enableAutocomplete: true,
+  onchanged: function(currentLocation, radius, isMarkerDropped) {
+    console.log("Location changed. New location (" + currentLocation.latitude + ", " + currentLocation.longitude + ")");
+  }
 });
